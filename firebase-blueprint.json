@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "ScoreRecord": {
+      "title": "Universal Score Record",
+      "description": "Global collective scores aggregated across all players for a specific game mode",
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["medium", "minmax", "ai"],
+          "description": "Identifier of the game mode"
+        },
+        "humanWins": {
+          "type": "number",
+          "description": "Total wins achieved by human players across the globe"
+        },
+        "opponentWins": {
+          "type": "number",
+          "description": "Total wins achieved by the mode opponent (Computer, MinMax, or AI)"
+        },
+        "draws": {
+          "type": "number",
+          "description": "Total tied games across the globe"
+        },
+        "totalGames": {
+          "type": "number",
+          "description": "Total games completed globally in this mode"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last recorded score update"
+        }
+      },
+      "required": ["mode", "humanWins", "opponentWins", "draws", "totalGames", "updatedAt"]
+    },
+    "AiCollectiveMemory": {
+      "title": "Collective AI Brain",
+      "description": "Cloud-persisted neural memory bank trained collectively on moves from all global players",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Memory partition key"
+        },
+        "episodesTrained": {
+          "type": "number",
+          "description": "Total game episodes learned across all players"
+        },
+        "epsilon": {
+          "type": "number",
+          "description": "Current exploration rate parameter"
+        },
+        "positionStats": {
+          "type": "object",
+          "description": "Map of cell move frequencies by human players (cells 0 through 8)"
+        },
+        "qTable": {
+          "type": "object",
+          "description": "Canonical state-action Q value matrix learned from player bouts"
+        },
+        "humanPatterns": {
+          "type": "object",
+          "description": "Dict of board state hashes mapped to recorded human candidate actions"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last neural memory update"
+        }
+      },
+      "required": ["id", "episodesTrained", "epsilon", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/scores/{modeId}": {
+      "schema": { "$ref": "#/entities/ScoreRecord" },
+      "description": "Universal scores collection accessible to all players"
+    },
+    "/ai_memory/{memoryId}": {
+      "schema": { "$ref": "#/entities/AiCollectiveMemory" },
+      "description": "Collective AI brain memory weights synchronized across all global players"
+    }
+  }
+}

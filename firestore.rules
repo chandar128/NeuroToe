@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 64;
+    }
+
+    function isValidScore(data) {
+      return data.mode is string
+        && (data.mode == 'medium' || data.mode == 'minmax' || data.mode == 'ai')
+        && (data.humanWins is number && data.humanWins >= 0)
+        && (data.opponentWins is number && data.opponentWins >= 0)
+        && (data.draws is number && data.draws >= 0);
+    }
+
+    function isValidAiMemory(data) {
+      return data.id is string
+        && (data.episodesTrained is number && data.episodesTrained >= 0);
+    }
+
+    // Default safety catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Universal scores for Medium, MinMax, and AI modes
+    match /scores/{modeId} {
+      allow read: if isValidId(modeId);
+      allow create, update: if isValidId(modeId) && isValidScore(request.resource.data);
+      allow delete: if false;
+    }
+
+    // Collective AI memory shared and updated by all players worldwide
+    match /ai_memory/{memoryId} {
+      allow read: if isValidId(memoryId);
+      allow create, update: if isValidId(memoryId) && isValidAiMemory(request.resource.data);
+      allow delete: if false;
+    }
+
+    // Health check test path
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "NeuroToe: AI Tic-Tac-Toe Arena",
+  "description": "Interactive Tic-Tac-Toe featuring Minimax Alpha-Beta, Adaptive Pattern AI, and Q-Learning Reinforcement Learning with real-time brain inspection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
